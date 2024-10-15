@@ -1,9 +1,9 @@
-from django.urls import path, include
-from . import views
 from django.contrib import admin
+from django.urls import path, include
 
 
 # Define your app's URL patterns
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('Hospital/', include('Hospital.urls.py'))]
+    path('', include('Hospital.urls'))
+]

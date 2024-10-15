@@ -6,7 +6,8 @@ from django.contrib.auth.views import LoginView,LogoutView
 
 #-------------FOR ADMIN RELATED URLS
 urlpatterns = [
-   
+    path('admin/', admin.site.urls),
+    path('', views.home_view, name='home'), 
 
     path('aboutus', views.aboutus_view),
     path('contactus', views.contactus_view),
