@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Hospital',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +59,10 @@ ROOT_URLCONF = 'Systemproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            r'C:\Users\Simon\Desktop\Hospitalmangementsystem\Systemproject\templates'  # Your specific path
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,6 +74,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'Systemproject.wsgi.application'
 
