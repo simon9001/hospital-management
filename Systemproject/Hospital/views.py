@@ -84,25 +84,43 @@ def doctor_signup_view(request):
     return render(request,'hospital/doctorsignup.html',context=mydict)
 
 
+from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from django.contrib.auth.models import Group, User
+from django.contrib import messages
+from . import forms
+
 def patient_signup_view(request):
-    userForm=forms.PatientUserForm()
-    patientForm=forms.PatientForm()
-    mydict={'userForm':userForm,'patientForm':patientForm}
-    if request.method=='POST':
-        userForm=forms.PatientUserForm(request.POST)
-        patientForm=forms.PatientForm(request.POST,request.FILES)
+    userForm = forms.PatientUserForm()
+    patientForm = forms.PatientForm()
+    mydict = {'userForm': userForm, 'patientForm': patientForm}
+    
+    if request.method == 'POST':
+        userForm = forms.PatientUserForm(request.POST)
+        patientForm = forms.PatientForm(request.POST, request.FILES)
+        
         if userForm.is_valid() and patientForm.is_valid():
-            user=userForm.save()
-            user.set_password(user.password)
-            user.save()
-            patient=patientForm.save(commit=False)
-            patient.user=user
-            patient.assignedDoctorId=request.POST.get('assignedDoctorId')
-            patient=patient.save()
-            my_patient_group = Group.objects.get_or_create(name='PATIENT')
-            my_patient_group[0].user_set.add(user)
-        return HttpResponseRedirect('patientlogin')
-    return render(request,'hospital/patientsignup.html',context=mydict)
+            username = userForm.cleaned_data.get('username')
+            
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Username already exists.')
+            else:
+                user = userForm.save()
+                user.set_password(user.password)
+                user.save()
+                
+                patient = patientForm.save(commit=False)
+                patient.user = user
+                patient.assignedDoctorId = request.POST.get('assignedDoctorId')
+                patient.save()
+                
+                my_patient_group, created = Group.objects.get_or_create(name='PATIENT')
+                my_patient_group.user_set.add(user)
+                
+                return HttpResponseRedirect('patientlogin')
+    
+    return render(request, 'hospital/patientsignup.html', context=mydict)
+
 
 
 
